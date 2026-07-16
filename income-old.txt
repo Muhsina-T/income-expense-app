@@ -1,0 +1,268 @@
+interface Income {
+
+    id: number;
+
+    amount: number;
+
+    paymentMode: string;
+
+    description: string;
+
+    date: string;
+
+    fileName: string;
+
+}
+
+const form = document.getElementById("incomeForm") as HTMLFormElement;
+
+const amount = document.getElementById("amount") as HTMLInputElement;
+
+const description = document.getElementById("description") as HTMLTextAreaElement;
+
+const date = document.getElementById("date") as HTMLInputElement;
+
+const attachment = document.getElementById("attachment") as HTMLInputElement;
+
+const descriptionCount =
+document.getElementById("descriptionCount") as HTMLParagraphElement;
+
+const fileNameDisplay =
+document.getElementById("fileNameDisplay") as HTMLParagraphElement;
+
+description.addEventListener("input", () => {
+
+    descriptionCount.textContent =
+
+        `${description.value.length} / 200 Characters`;
+
+});
+
+attachment.addEventListener("change", () => {
+
+    const selected = attachment.files?.[0];
+
+    fileNameDisplay.textContent =
+
+        selected
+            ? selected.name
+            : "No file selected";
+
+});
+
+
+// ======================================
+// CHECK WHETHER WE ARE EDITING
+// ======================================
+
+const params = new URLSearchParams(window.location.search);
+
+const editId = params.get("id");
+
+let incomes: Income[] = JSON.parse(
+
+    localStorage.getItem("income") || "[]"
+
+);
+
+function loadIncomeForEdit() {
+
+    if (!editId) return;
+
+    const income = incomes.find(
+
+        item => item.id === Number(editId)
+
+    );
+
+    if (!income) return;
+
+    amount.value = income.amount.toString();
+
+    description.value = income.description;
+
+    descriptionCount.textContent =
+
+`${income.description.length} / 200 Characters`;
+
+fileNameDisplay.textContent =
+
+income.fileName || "No file selected";
+
+    date.value = income.date;
+
+    const payment = document.querySelector(
+
+        `input[value="${income.paymentMode}"]`
+
+    ) as HTMLInputElement;
+
+    if (payment) {
+
+        payment.checked = true;
+
+    }
+
+    const button = document.querySelector(
+
+        ".save-btn"
+
+    ) as HTMLButtonElement;
+
+    button.textContent = "Update Income";
+
+}
+
+// Set today's date automatically
+
+date.value = new Date().toISOString().split("T")[0];
+
+loadIncomeForEdit();
+
+function validateForm(): boolean {
+
+    if (
+
+        amount.value.trim() === "" ||
+
+        Number(amount.value) <= 0
+
+    ){
+
+        alert("Please enter a valid amount.");
+
+        amount.focus();
+
+        return false;
+
+    }
+
+    if(
+
+        description.value.trim() === ""
+
+    ){
+
+        alert("Please enter a description.");
+
+        description.focus();
+
+        return false;
+
+    }
+
+    if(
+
+        date.value===""
+
+    ){
+
+        alert("Please select a date.");
+
+        date.focus();
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+form.addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+    if(!validateForm()){
+
+    return;
+
+}
+
+    const paymentMode = (
+        document.querySelector(
+            'input[name="payment"]:checked'
+        ) as HTMLInputElement
+    ).value;
+
+    const selectedFile = attachment.files?.[0];
+
+    if (editId) {
+
+        // Update Existing Income
+
+        const index = incomes.findIndex(
+
+            income => income.id === Number(editId)
+
+        );
+
+        if (index !== -1) {
+
+            incomes[index] = {
+
+                ...incomes[index],
+
+                amount: Number(amount.value),
+
+                paymentMode,
+
+                description: description.value,
+
+                date: date.value,
+
+                fileName: selectedFile
+                    ? selectedFile.name
+                    : incomes[index].fileName
+
+            };
+
+        }
+
+    } else {
+
+        // Add New Income
+
+        const newIncome: Income = {
+
+            id: Date.now(),
+
+            amount: Number(amount.value),
+
+            paymentMode,
+
+            description: description.value,
+
+            date: date.value,
+
+            fileName: selectedFile
+                ? selectedFile.name
+                : ""
+
+        };
+
+        incomes.push(newIncome);
+
+    }
+
+    localStorage.setItem(
+
+        "income",
+
+        JSON.stringify(incomes)
+
+    );
+
+    alert(
+
+        editId
+            ? "Income Updated Successfully!"
+            : "Income Saved Successfully!"
+
+    );
+
+    window.location.href = "dashboard.html";
+
+});
+
+export {};
