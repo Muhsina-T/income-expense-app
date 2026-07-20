@@ -64,7 +64,9 @@ document.getElementById("transactionContainer") as HTMLDivElement;
 
 // ADD THESE TWO
 
-
+const searchInput =
+document.getElementById("searchInput") as HTMLInputElement;
+console.log("aaaaaaaaaaaaa");
 
 
 const filterType =
@@ -384,7 +386,8 @@ function formatDate(date:string){
 function filterTransactions(){
 
 
-    
+    const search =
+    searchInput.value.toLowerCase();
 
 
     const type =
@@ -421,7 +424,7 @@ function filterTransactions(){
 
         item.description
         .toLowerCase()
-        
+        .includes(search);
 
 
 
@@ -619,7 +622,10 @@ displayTransactions();
 // SEARCH & FILTER EVENTS
 // ===============================
 
-
+searchInput.addEventListener(
+    "input",
+    filterTransactions
+);
 
 
 filterType.addEventListener(
