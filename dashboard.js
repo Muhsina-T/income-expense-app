@@ -6,8 +6,6 @@ const totalExpense = document.getElementById("totalExpense");
 const cashInHand = document.getElementById("cashInHand");
 const transactionContainer = document.getElementById("transactionContainer");
 // ADD THESE TWO
-const searchInput = document.getElementById("searchInput");
-console.log("aaaaaaaaaaaaa");
 const filterType = document.getElementById("filterType");
 console.log("bbbbbbbbbbbbb");
 // ===============================
@@ -15,7 +13,6 @@ console.log("bbbbbbbbbbbbb");
 // ===============================
 let incomes = JSON.parse(localStorage.getItem("income") || "[]");
 let expenses = JSON.parse(localStorage.getItem("expense") || "[]");
-let transactions = JSON.parse(localStorage.getItem("transactions") || "[]");
 // ===============================
 // CALCULATIONS
 // ===============================
@@ -174,7 +171,6 @@ function formatDate(date) {
     });
 }
 function filterTransactions() {
-    const search = searchInput.value.toLowerCase();
     const type = filterType.value;
     transactionContainer.innerHTML = "";
     const filtered = [
@@ -188,8 +184,7 @@ function filterTransactions() {
         }))
     ].filter(item => {
         const matchText = item.description
-            .toLowerCase()
-            .includes(search);
+            .toLowerCase();
         const matchType = type === "all"
             ||
                 item.type === type;
@@ -257,6 +252,5 @@ displayTransactions();
 // ===============================
 // SEARCH & FILTER EVENTS
 // ===============================
-searchInput.addEventListener("input", filterTransactions);
 filterType.addEventListener("change", filterTransactions);
 export {};
