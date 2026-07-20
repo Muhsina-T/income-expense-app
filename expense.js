@@ -82,7 +82,7 @@ form.addEventListener("submit", (event) => {
     alert(editId
         ? "Expense Updated Successfully!"
         : "Expense Saved Successfully!");
-    window.location.href = "dashboard.html";
+    window.location.href = "index.html";
 });
 function loadExpenseForEdit() {
     if (!editId)

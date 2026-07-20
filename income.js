@@ -139,6 +139,6 @@ incomeForm.addEventListener("submit", (event) => {
     alert(incomeEditId
         ? "Income Updated Successfully!"
         : "Income Saved Successfully!");
-    window.location.href = "dashboard.html";
+    window.location.href = "index.html";
 });
 export {};

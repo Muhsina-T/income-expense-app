@@ -256,7 +256,7 @@ form.addEventListener("submit", (event)=>{
 
 
 
-    window.location.href="dashboard.html";
+    window.location.href="index.html";
 
 
 });
